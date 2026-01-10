@@ -1,0 +1,32 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+bin/
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Dependency directories (only if you use 'go mod vendor')
+# vendor/
+
+# Environment variables (Crucial for security)
+.env
+
+# IDE Specifics
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS Specifics
+.DS_Store
+Thumbs.db
+
+# Optional: If you use Docker for your database
+postgres_data/
