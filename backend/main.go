@@ -3,11 +3,13 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"html"
 	"log"
 	"net/http"
 
 	"github.com/NicolasKivela/solita-dev-academy-spring-2026-exercise/handler"
 	"github.com/NicolasKivela/solita-dev-academy-spring-2026-exercise/repository"
+	"github.com/NicolasKivela/solita-dev-academy-spring-2026-exercise/service"
 )
 
 func main() {
@@ -22,12 +24,23 @@ func main() {
 	}
 	fmt.Println("Successfully connected to the database!")
 	myRepo := &repository.Repository{Db: db}
-	myHandler := &handler.Handler{Repo: myRepo}
-	http.HandleFunc("/daily-data", myHandler.GetDailyElectricityData)
+	myService := &service.Service{Repo: myRepo}
+	myHandler := &handler.Handler{Service: myService}
+
+	http.HandleFunc("/api/daily-data", myHandler.GetDailyElectricityData)
+	http.HandleFunc("/api", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
+	})
 	port := ":8010"
+
+	fmt.Println("Starting server")
 	err = http.ListenAndServe(port, nil)
+
+	fmt.Println(err)
+	fmt.Println("Starting server")
 	if err != nil {
 		log.Fatal("Listenandserve", err)
 	}
+	fmt.Println(err)
 	fmt.Printf("HEllo")
 }
