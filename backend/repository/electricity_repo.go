@@ -13,9 +13,10 @@ type Repository struct {
 	Db *sql.DB
 }
 
-func (r *Repository) FetchElectricityDaily(start time.Time, end time.Time) ([]model.DailyData, error) {
+func (r *Repository) FetchElectricityDaily(start time.Time, end time.Time) (map[time.Time]model.DailyData, error) {
 	fmt.Println("FetchingElectricityDaily")
 	rows, err := r.Db.Query(`SELECT date, SUM(productionamount) AS daily_production, 
+	SUM(consumptionamount) AS daily_consumption,
 	AVG(hourlyprice) AS avg_daily_price
 	FROM public.electricitydata
 	WHERE date BETWEEN $1 AND $2
@@ -26,16 +27,31 @@ func (r *Repository) FetchElectricityDaily(start time.Time, end time.Time) ([]mo
 	}
 
 	defer rows.Close()
-	datarows := make([]model.DailyData, 0, 2200)
+	dataMap := make(map[time.Time]model.DailyData)
 	for rows.Next() {
 		var dailydata model.DailyData
-		err := rows.Scan(&dailydata.Date, &dailydata.ProductionSum, &dailydata.AvgPrice)
+		err := rows.Scan(&dailydata.Date, &dailydata.ProductionSum, &dailydata.ConsumptionSum, &dailydata.AvgPrice)
 		if err != nil {
 			return nil, err
 		}
-		fmt.Println("Rows", rows)
-		datarows = append(datarows, dailydata)
+		dataMap[dailydata.Date] = dailydata
 	}
-	fmt.Println("Processed sql query", datarows)
-	return datarows, nil
+	return dataMap, nil
+}
+
+func (r *Repository) FetchRawElectricityData(start time.Time, end time.Time) ([]model.ElectricityData, error) {
+	rows, err := r.Db.Query(`SELECT date, startTime, productionAmount, consumptionAmount, hourlyPrice 
+                             FROM public.electricitydata WHERE date BETWEEN $1 AND $2`, start, end)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var list []model.ElectricityData
+	for rows.Next() {
+		var h model.ElectricityData
+		rows.Scan(&h.Date, &h.StartTime, &h.ProductionAmount, &h.ConsumptionAmount, &h.HourlyPrice)
+		list = append(list, h)
+	}
+	return list, nil
 }
