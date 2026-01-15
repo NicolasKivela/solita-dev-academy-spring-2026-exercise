@@ -10,6 +10,7 @@ import (
 	"github.com/NicolasKivela/solita-dev-academy-spring-2026-exercise/handler"
 	"github.com/NicolasKivela/solita-dev-academy-spring-2026-exercise/repository"
 	"github.com/NicolasKivela/solita-dev-academy-spring-2026-exercise/service"
+	"github.com/rs/cors"
 )
 
 func main() {
@@ -26,15 +27,23 @@ func main() {
 	myRepo := &repository.Repository{Db: db}
 	myService := &service.Service{Repo: myRepo}
 	myHandler := &handler.Handler{Service: myService}
-
-	http.HandleFunc("/api/daily-data", myHandler.GetDailyElectricityData)
-	http.HandleFunc("/api", func(w http.ResponseWriter, r *http.Request) {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/api/daily-data", myHandler.GetDailyElectricityData)
+	mux.HandleFunc("/api", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
 	})
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:5173"},
+		AllowedMethods:   []string{"GET", "POST", "OPTIONS"},
+		AllowedHeaders:   []string{"Content-Type", "Authorization"},
+		AllowCredentials: true,
+		Debug:            true,
+	})
+	cors := c.Handler(mux)
 	port := ":8010"
 
 	fmt.Println("Starting server")
-	err = http.ListenAndServe(port, nil)
+	err = http.ListenAndServe(port, cors)
 
 	fmt.Println(err)
 	fmt.Println("Starting server")

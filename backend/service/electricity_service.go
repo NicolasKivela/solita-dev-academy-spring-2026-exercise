@@ -44,7 +44,6 @@ func (ser *Service) DailyData(startStr, endStr string) (map[time.Time]model.Dail
 	if val, ok := dailydata[testDate]; ok {
 		fmt.Printf("Debugging Feb 1st: %+v\n", val)
 	}
-	fmt.Println("data", dailydata)
 	return dailydata, err
 }
 
@@ -57,9 +56,11 @@ func AggregateData(data []model.ElectricityData, dailyData map[time.Time]model.D
 		datekey := hour.Date
 		if day, exists := dailyData[datekey]; exists {
 			hourlyData := model.HourlyData{
-				Date:  datekey,
-				Hour:  hour.StartTime,
-				Price: hour.HourlyPrice,
+				Date:        datekey,
+				Hour:        hour.StartTime,
+				Price:       hour.HourlyPrice,
+				Consumption: hour.ConsumptionAmount,
+				Production:  hour.ProductionAmount,
 			}
 			day.HourlyData = append(day.HourlyData, hourlyData)
 			current = NegativeStreak(current, hour.HourlyPrice, &day)

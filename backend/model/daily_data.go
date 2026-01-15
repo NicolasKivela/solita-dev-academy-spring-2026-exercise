@@ -18,9 +18,11 @@ type DailyData struct {
 }
 
 type HourlyData struct {
-	Date  time.Time `json:"date"`
-	Hour  time.Time `json:"hour"`
-	Price float64   `json:"price"`
+	Date        time.Time `json:"date"`
+	Hour        time.Time `json:"hour"`
+	Price       float64   `json:"price"`
+	Consumption float64   `json:"consumption"`
+	Production  float64   `json:"production"`
 }
 
 type ElectricityData struct {
