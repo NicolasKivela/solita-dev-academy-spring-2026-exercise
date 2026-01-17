@@ -4,46 +4,19 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import { getElectricityData } from './api/electricity'
 import { dateFormatForAPI } from './utils/formatters'
+import { DailyTable } from './daily-overview/DailyTable'
+import { ChooseDate } from './daily-overview/ChooseDate'
+import type { DailyData } from "./types/electricity";
 function App() {
   const [count, setCount] = useState(0)
-  const [startDate, setStartDate] = useState<Date>(new Date());
-  const [endDate, setEndDate] = useState<Date>(new Date());
-
-  useEffect(()=>{
-    const start = dateFormatForAPI(startDate)
-    const end = dateFormatForAPI(endDate)
-    getElectricityData(start, end)
-        .then(data => {
-            console.log("Success:", data);
-        })
-        .catch(err => console.error(err));
-  },[startDate, endDate])
-
+  const [startDate, setStartDate] = useState<Date | null>(new Date());
+  const [endDate, setEndDate] = useState<Date | null>(new Date());
+  const [dailyData, setDailyData] = useState<DailyData[]>([]);
+  console.log("dailydata after chosen dates", dailyData)
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={()=>{setStartDate(new Date("2024-02-01")) 
-          setEndDate(new Date("2024-02-25"))}}> Test api</button> 
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+    <ChooseDate dailyData={dailyData} onChangeDailyData={setDailyData}/>
+    <DailyTable dailyData={dailyData}/>
     </>
   )
 }
