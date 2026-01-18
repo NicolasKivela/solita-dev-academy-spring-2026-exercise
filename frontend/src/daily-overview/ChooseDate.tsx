@@ -8,8 +8,8 @@ import { AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 interface ChooseDateProps {
-    dailyData: DailyData[]
-    onChangeDailyData: (dailydata: DailyData[])=>void
+    dailyData: Record<string, DailyData>
+    onChangeDailyData: (dailydata: Record<string, DailyData>)=>void
 }
 export function ChooseDate({dailyData, onChangeDailyData}: ChooseDateProps){
     const [startDate, setStartDate] = useState<Date | null>(new Date())

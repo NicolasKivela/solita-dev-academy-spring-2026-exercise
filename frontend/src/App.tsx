@@ -11,13 +11,13 @@ function App() {
   const [count, setCount] = useState(0)
   const [startDate, setStartDate] = useState<Date | null>(new Date());
   const [endDate, setEndDate] = useState<Date | null>(new Date());
-  const [dailyData, setDailyData] = useState<DailyData[]>([]);
+  const [dailyData, setDailyData] = useState< Record<string, DailyData>>({});
   console.log("dailydata after chosen dates", dailyData)
   return (
-    <>
+    <div>
     <ChooseDate dailyData={dailyData} onChangeDailyData={setDailyData}/>
     <DailyTable dailyData={dailyData}/>
-    </>
+    </div>
   )
 }
 

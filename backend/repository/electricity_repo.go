@@ -15,9 +15,9 @@ type Repository struct {
 
 func (r *Repository) FetchElectricityDaily(start time.Time, end time.Time) (map[time.Time]model.DailyData, error) {
 	fmt.Println("FetchingElectricityDaily")
-	rows, err := r.Db.Query(`SELECT date, SUM(productionamount) AS daily_production, 
-	SUM(consumptionamount) AS daily_consumption,
-	AVG(hourlyprice) AS avg_daily_price
+	rows, err := r.Db.Query(`SELECT date, SUM(COALESCE(productionamount,0)) AS daily_production, 
+	SUM(COALESCE(consumptionamount,0)) AS daily_consumption,
+	AVG(COALESCE(hourlyprice,0)) AS avg_daily_price
 	FROM public.electricitydata
 	WHERE date BETWEEN $1 AND $2
 	GROUP BY date
@@ -40,7 +40,8 @@ func (r *Repository) FetchElectricityDaily(start time.Time, end time.Time) (map[
 }
 
 func (r *Repository) FetchRawElectricityData(start time.Time, end time.Time) ([]model.ElectricityData, error) {
-	rows, err := r.Db.Query(`SELECT date, startTime, productionAmount, consumptionAmount, hourlyPrice 
+	rows, err := r.Db.Query(`SELECT date, startTime, COALESCE(productionAmount,0)
+							, COALESCE(consumptionAmount, 0), COALESCE(hourlyPrice) 
                              FROM public.electricitydata WHERE date BETWEEN $1 AND $2`, start, end)
 	if err != nil {
 		return nil, err
