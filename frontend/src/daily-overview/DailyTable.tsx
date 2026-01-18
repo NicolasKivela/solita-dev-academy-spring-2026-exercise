@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DailyGraph } from "./DailyGraph";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
@@ -85,6 +85,10 @@ export function DailyTable({ dailyData }: DailyTableProps) {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+  useEffect(() => {
+    setPage(0);
+    setClickedDay(Object.keys(dailyData)[0]);
+  }, [dailyData]);
   const dates = Object.keys(dailyData);
 
   const details = dailyData[clickedDay] || dailyData[dates[0]];
