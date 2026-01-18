@@ -44,6 +44,10 @@ The entire application is containerized for easy setup
     - Frontend architecture consists of: API component, Utility functions, and Electricity data component.
         - Electricity component has DailyTable, DailyGraph, and ChooseDate sub components.
 
+# AI-Usage
+   - I used AI for figuring out the Go language and setting up the Docker environment
+     
+
 # dev-academy exercise instructions
 
 This is the pre-assignment for Solita Dev Academy Finland March 2026. But if you’re here just purely out of curiosity, feel free to snatch the idea and make your own app just for the fun of it!
