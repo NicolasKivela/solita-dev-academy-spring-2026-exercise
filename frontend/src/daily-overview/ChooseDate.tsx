@@ -46,7 +46,6 @@ export function ChooseDate({ onChangeDailyData }: ChooseDateProps) {
         />
       </LocalizationProvider>
       <button
-        style={{ height: "100%" }}
         onClick={() => {
           setValue();
         }}
