@@ -12,6 +12,8 @@ import Collapse from '@mui/material/Collapse';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import IconButton from '@mui/material/IconButton';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import type { DailyData } from "../types/electricity";
 import { ChooseDate } from "./ChooseDate";
 import { dateFormatForUI } from "../utils/formatters";
@@ -29,24 +31,28 @@ interface Column {
 
 const columns: readonly Column[] = [
   { id: 'date', label: 'Name', minWidth: 170},
-  { id: 'avg_daily_price', label: 'Average Price', minWidth: 100 },
+  { id: 'avg_daily_price', label: 'Average Price (€)', minWidth: 100,
+    format: (value:number) => value.toFixed(2)
+  },
   {
     id: 'daily_production',
     label: 'Daily Production (MWh/h)',
     minWidth: 170,
     align: 'right',
-    format: (value: number) => value.toLocaleString('en-US'),
+    format: (value: number) => 
+    value.toLocaleString('fi-FI', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
   },
   {
     id: 'daily_consumption',
-    label: 'Daily Consumption (kWh)',
+    label: 'Daily Consumption (MWh)',
     minWidth: 170,
     align: 'right',
-    format: (value: number) => value.toLocaleString('en-US'),
+    format: (value: number) => 
+    (value/1000).toLocaleString('fi-FI', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
   },
   {
     id: 'negative_streak',
-    label: 'Longest Negative Price Streak',
+    label: 'Longest Consecutive Negative Hourly Price',
     minWidth: 170,
     align: 'right',
     format: (value: number) => value.toFixed(2),
@@ -120,7 +126,12 @@ export function DailyTable({dailyData}:DailyTableProps){
                         size="small"
                         onClick={() => setClickedDay(dateKey)}
                             >
-                            {clickedDay===dateKey ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                            {clickedDay===dateKey ? <KeyboardArrowUpIcon />
+                            
+                            
+                            
+                            : <KeyboardArrowDownIcon />}
+
                         </IconButton> : <></>}
                           {column.format && typeof value === 'number'
                             ? column.format(value)
@@ -128,10 +139,13 @@ export function DailyTable({dailyData}:DailyTableProps){
                                 ? dateFormatForUI(dateKey)
                                 : value
                             }
+                            
                         </TableCell>
+
                       );
                     })}
                   </TableRow>
+
                 );
               })}
           </TableBody>
