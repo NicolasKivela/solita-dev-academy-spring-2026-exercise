@@ -14,7 +14,8 @@ import (
 )
 
 func main() {
-	connStr := "postgres://academy:academy@localhost:5432/electricity"
+	//connStr := "postgres://academy:academy@localhost:5432/electricity"
+	connStr := "postgres://academy:academy@db:5432/electricity"
 	db, err := sql.Open("pgx", connStr)
 	if err != nil {
 		log.Fatal(err)
@@ -33,14 +34,14 @@ func main() {
 		fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
 	})
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:5173"},
+		AllowedOrigins:   []string{"http://localhost:5173", "http://localhost"},
 		AllowedMethods:   []string{"GET", "POST", "OPTIONS"},
 		AllowedHeaders:   []string{"Content-Type", "Authorization"},
 		AllowCredentials: true,
 		Debug:            true,
 	})
 	cors := c.Handler(mux)
-	port := ":8010"
+	port := ":8080"
 
 	fmt.Println("Starting server")
 	err = http.ListenAndServe(port, cors)
@@ -51,5 +52,4 @@ func main() {
 		log.Fatal("Listenandserve", err)
 	}
 	fmt.Println(err)
-	fmt.Printf("HEllo")
 }

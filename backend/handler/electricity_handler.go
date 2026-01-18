@@ -18,9 +18,7 @@ func (h *Handler) GetDailyElectricityData(w http.ResponseWriter, r *http.Request
 	endStr := r.URL.Query().Get("end")
 	dailydata, err := h.Service.DailyData(startStr, endStr)
 	if err != nil {
-		// LOG the specific error to your terminal
 		fmt.Println("HANDLER ERROR:", err)
-		// SEND the error back to curl
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

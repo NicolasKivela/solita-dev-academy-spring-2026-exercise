@@ -15,7 +15,6 @@ type Service struct {
 
 func (ser *Service) DailyData(startStr, endStr string) (map[time.Time]model.DailyData, error) {
 
-	fmt.Println("startStr and endStr", startStr, endStr)
 	if startStr == "" {
 		log.Fatal("Empty startStr")
 	}
@@ -40,10 +39,6 @@ func (ser *Service) DailyData(startStr, endStr string) (map[time.Time]model.Dail
 		return nil, fmt.Errorf("failed to fetch raw hourly data: %w", err)
 	}
 	dailydata = AggregateData(rawhourlydata, dailydata)
-	testDate, _ := time.Parse("2006-01-02", "2024-02-01")
-	if val, ok := dailydata[testDate]; ok {
-		fmt.Printf("Debugging Feb 1st: %+v\n", val)
-	}
 	return dailydata, err
 }
 
@@ -51,7 +46,6 @@ func AggregateData(data []model.ElectricityData, dailyData map[time.Time]model.D
 
 	current := 0
 
-	//dailyRow := make(map[time.Time]model.DailyData)
 	for _, hour := range data {
 		datekey := hour.Date
 		if day, exists := dailyData[datekey]; exists {
